@@ -13,7 +13,7 @@ database_id = "7786df17-078c-4757-8a94-a690e5c24b6b"		#d1数据库id
 
 [[kv_namespaces]]
 binding = "kv"			#kv绑定名默认不可修改
-id = "cloud-mail"					#kv数据库id
+id = "5eee3b3568ed4ee89a2990380bd68ecc"					#kv数据库id
 
 #[[r2_buckets]]
 #binding = "r2"			#r2对象存储绑定名默认不可修改
