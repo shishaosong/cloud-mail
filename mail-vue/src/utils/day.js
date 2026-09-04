@@ -3,23 +3,11 @@ import 'dayjs/locale/zh-cn'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import {useSettingStore} from "@/store/setting.js";
-import {getInitialLanguage, normalizeLanguage} from "@/i18n/language.js";
+const settingStore = useSettingStore();
 dayjs.extend(utc)
 dayjs.extend(timezone)
-dayjs.locale(toDayjsLocale(getInitialLanguage()))
+dayjs.locale(settingStore.lang === 'en' ? 'en' : 'zh-cn')
 const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-function toDayjsLocale(lang) {
-    return normalizeLanguage(lang) === 'en' ? 'en' : 'zh-cn'
-}
-
-function getCurrentLanguage() {
-    try {
-        return normalizeLanguage(useSettingStore().lang) || getInitialLanguage()
-    } catch {
-        return getInitialLanguage()
-    }
-}
 
 export function fromNow(date) {
     const d = dayjs.utc(date).tz(timeZone);
@@ -28,7 +16,7 @@ export function fromNow(date) {
     const diffMinutes = now.diff(d, 'minute');
     const diffHours = now.diff(d, 'hour');
     const isToday = now.isSame(d, 'day');
-    if (getCurrentLanguage() === 'en') {
+    if (settingStore.lang === 'en') {
 
         if (isToday) {
             if (diffSeconds < 60) return `Just now`;
@@ -83,7 +71,7 @@ export function formatDetailDate(time) {
 
     const isSameYear = now.year() === d.year();
 
-    if (getCurrentLanguage() === 'en') {
+    if (settingStore.lang === 'en') {
         return isSameYear
             ? d.format('ddd, MMM D, h:mm A')
             : d.format('ddd, MMM D, YYYY, h:mm A');
@@ -101,5 +89,5 @@ export function toUtc(time) {
 }
 
 export function setExtend(lang) {
-    dayjs.locale(toDayjsLocale(lang))
+    dayjs.locale(lang)
 }
