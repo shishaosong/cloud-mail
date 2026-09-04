@@ -16,6 +16,18 @@
       <div v-else class="dark-icon icon-item" @click="openDark($event)">
         <Icon icon="solar:moon-linear"/>
       </div>
+      <el-dropdown @command="handleLanguageSwitch" trigger="click">
+        <div class="icon-item" style="font-size: 14px; font-weight: bold; outline: none;">
+          {{ currentLanguageLabel }}
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="zh-cn">简体中文</el-dropdown-item>
+            <el-dropdown-item command="en">English</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+
       <div class="notice icon-item" @click="openNotice">
         <Icon icon="streamline-plump:announcement-megaphone"/>
       </div>
@@ -86,7 +98,7 @@ import {hasPerm} from "@/perm/perm.js"
 import {useI18n} from "vue-i18n";
 import {setExtend} from "@/utils/day.js"
 
-const {t} = useI18n();
+const {t, locale} = useI18n();
 const route = useRoute();
 const settingStore = useSettingStore();
 const userStore = useUserStore();
@@ -97,6 +109,10 @@ const userinfoRef = ref({})
 
 const accountCount = computed(() => {
   return userStore.user.role.accountCount
+})
+
+const currentLanguageLabel = computed(() => {
+  return settingStore.lang === 'zh-cn' ? '中' : 'En'
 })
 
 const sendType = computed(() => {
@@ -183,10 +199,14 @@ async function copyEmail(email) {
 }
 
 function changeLang(lang) {
-  setExtend(lang === 'en' ? 'en' : 'zh-cn')
-  settingStore.lang = lang
+  settingStore.setLang(lang)
+  locale.value = settingStore.lang
+  setExtend(settingStore.lang)
 }
 
+function handleLanguageSwitch(lang) {
+  changeLang(lang)
+}
 function openNotice() {
   uiStore.showNotice()
 }
